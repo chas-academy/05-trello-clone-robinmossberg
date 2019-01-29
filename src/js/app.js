@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-// require('webpack-jquery-ui');
+require('webpack-jquery-ui');
 import '../css/styles.css';
 
 /**
@@ -49,6 +49,7 @@ const jtrello = (function() {
   /* ============== Metoder för att hantera listor nedan ============== */
   function createList() {
     event.preventDefault();
+    $('.list-card').clone().after('.card');
     console.log("This should create a new list");
   }
 
