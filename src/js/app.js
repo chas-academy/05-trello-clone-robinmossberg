@@ -33,6 +33,9 @@ const jtrello = (function() {
 
   function createTabs() {}
   function createDialogs() {}
+  function dragCards(){
+    $('.list-cards').sortable({connectWith: '.list-cards'});
+  };
 
   /*
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
@@ -41,6 +44,7 @@ const jtrello = (function() {
   function bindEvents() {
     DOM.$newListButton.on('click', createList);
     DOM.$deleteListButton.on('click', deleteList);
+    
 
     DOM.$newCardForm.on('submit', createCard);
     DOM.$deleteCardButton.on('click', deleteCard);
@@ -49,22 +53,26 @@ const jtrello = (function() {
   /* ============== Metoder för att hantera listor nedan ============== */
   function createList() {
     event.preventDefault();
-    $('.list-card').clone().after('.card');
     console.log("This should create a new list");
   }
 
   function deleteList() {
+    $(this).closest('.list').remove();
     console.log("This should delete the list you clicked on");
   }
 
   /* =========== Metoder för att hantera kort i listor nedan =========== */
   function createCard(event) {
     event.preventDefault();
-    console.log("This should create a new card");
+    let cardValue = $('input[name=title]').val();
+    $(this)
+    .closest('.add-new')
+    .before('<li class="card ui-sortable">' + cardValue + '<button class="button delete">X</button></li>');
+    dragCards();
   }
 
   function deleteCard() {
-    console.log("This should delete the card you clicked on");
+    $(this).parent().remove();
   }
 
   // Metod för att rita ut element i DOM:en
@@ -79,7 +87,7 @@ const jtrello = (function() {
     captureDOMEls();
     createTabs();
     createDialogs();
-
+    dragCards();
     bindEvents();
   }
 
