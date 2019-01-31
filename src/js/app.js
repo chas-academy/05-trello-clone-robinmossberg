@@ -1,7 +1,9 @@
 import $ from 'jquery';
+import 'jquery-ui/themes/base/all.css'
 
 require('webpack-jquery-ui');
 import '../css/styles.css';
+import dialog from 'jquery-ui/ui/widgets/dialog';
 
 /**
  * jtrello
@@ -32,7 +34,31 @@ const jtrello = (function() {
   }
 
   function createTabs() {}
-  function createDialogs() {}
+
+  function openDialog(){
+    DOM.$listDialog.dialog('open');
+    
+  };
+
+  function createDialogs() {
+    DOM.$listDialog.dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: [
+        {        
+          text: "Ok",          
+          click: function() {
+            
+            let $inputValue = $(this).find('input[name="title"]').val();
+            $(this).dialog("close");
+            createList($inputValue);
+            console.log($inputValue);
+          }
+        }
+      ]
+    });
+    
+  }
   function dragCards(){
     $('.list-cards').sortable({connectWith: '.list-cards'});
   };
@@ -42,37 +68,59 @@ const jtrello = (function() {
   *  createList, deleteList, createCard och deleteCard etc.
   */
   function bindEvents() {
-    DOM.$newListButton.on('click', createList);
-    DOM.$deleteListButton.on('click', deleteList);
-    
+    DOM.$board.on('click', '.list-header > button.delete', deleteList);
+    DOM.$board.on('click', 'button#new-list', openDialog);
 
-    DOM.$newCardForm.on('submit', createCard);
-    DOM.$deleteCardButton.on('click', deleteCard);
+    DOM.$board.on('submit', 'form.new-card', createCard);
+    DOM.$board.on('click', '.card > button.delete', deleteCard);
   }
 
   /* ============== Metoder för att hantera listor nedan ============== */
-  function createList() {
+  function createList(inputValue) {
     event.preventDefault();
-    console.log("This should create a new list");
-  }
+    $('.column:last')
+    .before(`<div class="column">
+      <div class="list">
+            <div class="list-header">
+                ${inputValue}
+                <button class="button delete">X</button>
+            </div>
+            <ul class="list-cards">
+                <li class="add-new">
+                    <form class="new-card" action="index.html">
+                        <input type="text" name="title" placeholder="Please name the card" />
+                        <button class="button add">Add new card</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>`);
+
+    
+  };
 
   function deleteList() {
-    $(this).closest('.list').remove();
+    $(this).closest('.column').remove();
     console.log("This should delete the list you clicked on");
   }
 
   /* =========== Metoder för att hantera kort i listor nedan =========== */
   function createCard(event) {
     event.preventDefault();
-    let cardValue = $('input[name=title]').val();
+    let cardValue = $(this).find('input[name=title]')
+    let getCardValue = cardValue.val();
     $(this)
     .closest('.add-new')
-    .before('<li class="card ui-sortable">' + cardValue + '<button class="button delete">X</button></li>');
+    .before('<li class="card ui-sortable">' + getCardValue + '<button class="button delete">X</button></li>');
+    cardValue.val("");
     dragCards();
   }
 
   function deleteCard() {
-    $(this).parent().remove();
+    $(this).parent().fadeOut(500, function () {
+      remove();
+    });
+    console.log("This should delete the card you clicked on");
   }
 
   // Metod för att rita ut element i DOM:en
