@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import 'jquery-ui/themes/base/all.css';
-// import 'widget.js';
+import './widget';
 
 require('webpack-jquery-ui');
 import '../css/styles.css';
@@ -47,14 +47,15 @@ const jtrello = (function () {
     DOM.$listDialog.dialog({
       autoOpen: false,
       modal: true,
+      show: {effect: 'bounce', duration: 600, times: 2},
       buttons: [
         {
           text: "Ok",
           click: function () {
             let $inputValue = $(this).find('input[name="title"]').val();
+            let $dateValue = $('#datepicker').val();
             $(this).dialog('close');
-            createList($inputValue);
-            console.log($inputValue);
+            createList($inputValue, $dateValue);
           }
         }
       ]
@@ -65,6 +66,14 @@ const jtrello = (function () {
     $('.column').sortable({ connectWith: '.column' });
   };
 
+  function pickDate(){
+    $('#datepicker').datepicker();
+  }
+
+  function nuke(){
+    $('.column').boomBaby('BOOOOOOM!!!')
+  }
+
   /*
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
   *  createList, deleteList, createCard och deleteCard etc.
@@ -72,21 +81,22 @@ const jtrello = (function () {
   function bindEvents() {
     DOM.$board.on('click', '.list-header > button.delete', deleteList);
     DOM.$board.on('click', 'button#new-list', openDialog);
-    // DOM.$board.on('click', '.boom');
+    DOM.$board.on('click', '.boom', nuke);
 
     DOM.$board.on('submit', 'form.new-card', createCard);
     DOM.$board.on('click', '.card > button.delete', deleteCard);
   }
 
   /* ============== Metoder för att hantera listor nedan ============== */
-  function createList(inputValue) {
+  function createList(inputVal, dateVal) {
     event.preventDefault();
     $('.column:last')
       .before(`<div class="column">
       <div class="list">
             <div class="list-header">
-                ${inputValue}
-                <button class="button delete">X</button>
+                ${inputVal} 
+                <button class="button delete">X</button><br>
+                ${dateVal}
             </div>
             <ul class="list-cards">
                 <li class="add-new">
@@ -104,7 +114,6 @@ const jtrello = (function () {
 
   function deleteList() {
     $(this).closest('.column').remove();
-    console.log("This should delete the list you clicked on");
   }
 
   /* =========== Metoder för att hantera kort i listor nedan =========== */
@@ -121,9 +130,8 @@ const jtrello = (function () {
 
   function deleteCard() {
     $(this).parent().fadeOut(500, function () {
-      remove();
+      $(this).closest('.card').remove();
     });
-    console.log("This should delete the card you clicked on");
   }
 
 
@@ -138,6 +146,7 @@ const jtrello = (function () {
     createDialogs();
     dragCards();
     bindEvents();
+    pickDate();
   }
 
   // All kod här
@@ -149,4 +158,5 @@ const jtrello = (function () {
 //usage
 $("document").ready(function () {
   jtrello.init();
+  
 });

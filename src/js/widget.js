@@ -18,11 +18,11 @@
   
   Plugin.prototype = {
   	init: function() {
-    this.boomifyFunction(this.element, this.options);
-    	
+    this.boomsterFunction(this.element, this.options);
+    	$(el)
     },
     
-    boomifyFunction: function(el, options) {
+    boomsterFunction: function(el, options) {
     console.log(el, options);
     }
   };
@@ -37,6 +37,6 @@
 
 })(jQuery, window, document);
 
-$(document).ready(function(){
-	$('#banner-message').boomify();
-})
+// $(document).ready(function(){
+// 	$('#banner-message').boomify();
+// })
