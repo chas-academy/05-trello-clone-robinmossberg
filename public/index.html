@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>jQuery UI - Trello Clone (yay!)</title>
-<link href="./css/index.c9a541b77cbd0628d06e.css" rel="stylesheet"></head>
+<link href="./css/index.b6059dd58f9168701ee8.css" rel="stylesheet"></head>
+
 <body>
     <div class="board">
         <div class="column">
@@ -74,9 +76,23 @@
     </div>
 
     <div id="list-creation-dialog" title="Create new list" style="height: 40px">
-        <form> 
-            <input type="text" name="title" placeholder="List title" />
+        <form id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Task Name</a></li>
+                <li><a href="#tabs-2">Date</a></li>
+            </ul>
+            <div id="tabs-1">
+                <input type="text" name="title" placeholder="List title" />
+                <button type="submit" class=" button">Save</button>
+            </div>
+            <div id="tabs-2">
+                <p>
+                    <p>Date: <input type="text" id="datepicker"></p>
+                    <button type="submit" class=" button">Save</button>
+                </p>
+            </div>
         </form>
     </div>
 <script type="text/javascript" src="./bundle.js"></script></body>
+
 </html>

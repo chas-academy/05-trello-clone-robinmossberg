@@ -19,7 +19,7 @@
   Plugin.prototype = {
   	init: function() {
     this.boomifyFunction(this.element, this.options);
-    	//where the magic happens
+    	
     },
     
     boomifyFunction: function(el, options) {

@@ -1,9 +1,10 @@
 import $ from 'jquery';
-import 'jquery-ui/themes/base/all.css'
+import 'jquery-ui/themes/base/all.css';
+// import 'widget.js';
 
 require('webpack-jquery-ui');
 import '../css/styles.css';
-import dialog from 'jquery-ui/ui/widgets/dialog';
+// import dialog from 'jquery-ui/ui/widgets/dialog';
 
 /**
  * jtrello
@@ -12,7 +13,7 @@ import dialog from 'jquery-ui/ui/widgets/dialog';
 
 // Här tillämpar vi mönstret reavealing module pattern:
 // Mer information om det mönstret här: https://bit.ly/1nt5vXP
-const jtrello = (function() {
+const jtrello = (function () {
   "use strict"; // https://lucybain.com/blog/2014/js-use-strict/
 
   // Referens internt i modulen för DOM element
@@ -25,7 +26,7 @@ const jtrello = (function() {
     DOM.$columns = $('.column');
     DOM.$lists = $('.list');
     DOM.$cards = $('.card');
-    
+    DOM.$thingsToBeDestroyed = $('list button')
     DOM.$newListButton = $('button#new-list');
     DOM.$deleteListButton = $('.list-header > button.delete');
 
@@ -33,11 +34,13 @@ const jtrello = (function() {
     DOM.$deleteCardButton = $('.card > button.delete');
   }
 
-  function createTabs() {}
+  function createTabs() {
+    $('#tabs').tabs();
+  }
 
-  function openDialog(){
+  function openDialog() {
     DOM.$listDialog.dialog('open');
-    
+   
   };
 
   function createDialogs() {
@@ -45,22 +48,21 @@ const jtrello = (function() {
       autoOpen: false,
       modal: true,
       buttons: [
-        {        
-          text: "Ok",          
-          click: function() {
-            
+        {
+          text: "Ok",
+          click: function () {
             let $inputValue = $(this).find('input[name="title"]').val();
-            $(this).dialog("close");
+            $(this).dialog('close');
             createList($inputValue);
             console.log($inputValue);
           }
         }
       ]
     });
-    
   }
-  function dragCards(){
-    $('.list-cards').sortable({connectWith: '.list-cards'});
+  function dragCards() {
+    $('.list-cards').sortable({ connectWith: '.list-cards' });
+    $('.column').sortable({ connectWith: '.column' });
   };
 
   /*
@@ -70,6 +72,7 @@ const jtrello = (function() {
   function bindEvents() {
     DOM.$board.on('click', '.list-header > button.delete', deleteList);
     DOM.$board.on('click', 'button#new-list', openDialog);
+    // DOM.$board.on('click', '.boom');
 
     DOM.$board.on('submit', 'form.new-card', createCard);
     DOM.$board.on('click', '.card > button.delete', deleteCard);
@@ -79,7 +82,7 @@ const jtrello = (function() {
   function createList(inputValue) {
     event.preventDefault();
     $('.column:last')
-    .before(`<div class="column">
+      .before(`<div class="column">
       <div class="list">
             <div class="list-header">
                 ${inputValue}
@@ -96,7 +99,7 @@ const jtrello = (function() {
         </div>
     </div>`);
 
-    
+
   };
 
   function deleteList() {
@@ -110,8 +113,8 @@ const jtrello = (function() {
     let cardValue = $(this).find('input[name=title]')
     let getCardValue = cardValue.val();
     $(this)
-    .closest('.add-new')
-    .before('<li class="card ui-sortable">' + getCardValue + '<button class="button delete">X</button></li>');
+      .closest('.add-new')
+      .before('<li class="card ui-sortable">' + getCardValue + '<button class="button delete">X</button></li>');
     cardValue.val("");
     dragCards();
   }
@@ -123,8 +126,6 @@ const jtrello = (function() {
     console.log("This should delete the card you clicked on");
   }
 
-  // Metod för att rita ut element i DOM:en
-  function render() {}
 
   /* =================== Publika metoder nedan ================== */
 
@@ -146,6 +147,6 @@ const jtrello = (function() {
 })();
 
 //usage
-$("document").ready(function() {
+$("document").ready(function () {
   jtrello.init();
 });
